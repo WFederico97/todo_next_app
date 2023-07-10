@@ -1,6 +1,7 @@
 const { createContext, useState } = require("react")
 import { postRegister, postLogin } from "@/services/auth"
 
+
 const defaultProviderValue = {
     login: () => { },
     loading: false,
