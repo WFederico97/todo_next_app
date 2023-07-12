@@ -1,41 +1,48 @@
+// ** React Imports
+import { useState } from 'react'
+
 // ** MUI Components
-//import Typography from '@mui/material/Typography'
+import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-//import useMediaQuery from '@mui/material/useMediaQuery'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Configs
-//import themeConfig from 'src/configs/themeConfig'
+import themeConfig from 'src/configs/themeConfig'
+
+// ** Hooks
+
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Demo Components Imports
-//import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
+import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import StepAccountDetails from 'src/views/pages/auth/register-multi-steps/StepAccountDetails'
 
 // ** Styled Components
-// const RegisterMultiStepsIllustration = styled('img')(({ theme }) => ({
-//   zIndex: 2,
-//   maxHeight: 550,
-//   marginTop: theme.spacing(12),
-//   marginBottom: theme.spacing(12)
-// }))
+const RegisterMultiStepsIllustration = styled('img')(({ theme }) => ({
+  zIndex: 2,
+  maxHeight: 550,
+  marginTop: theme.spacing(12),
+  marginBottom: theme.spacing(12)
+}))
 
-// const LeftWrapper = styled(Box)(({ theme }) => ({
-//   width: '100%',
-//   display: 'flex',
-//   position: 'relative',
-//   alignItems: 'center',
-//   justifyContent: 'center',
-//   padding: theme.spacing(12),
-//   '& .img-mask': {
-//     left: 0
-//   },
-//   [theme.breakpoints.up('lg')]: {
-//     maxWidth: 470
-//   }
-// }))
+const LeftWrapper = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  position: 'relative',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: theme.spacing(12),
+  '& .img-mask': {
+    left: 0
+  },
+  [theme.breakpoints.up('lg')]: {
+    maxWidth: 470
+  }
+}))
 
 const RightWrapper = styled(Box)(({ theme }) => ({
   flex: 1,
@@ -51,12 +58,12 @@ const RightWrapper = styled(Box)(({ theme }) => ({
 
 const RegisterMultiSteps = () => {
   // ** Hooks
-  //const theme = useTheme()
-
+  const theme = useTheme()
+  const hidden = useMediaQuery(theme.breakpoints.down('lg'))
 
   return (
-    <Box className='content-right' sx={{ backgroundColor: 'customColors.bodyBg' }}>
-      {/* {!hidden ? (
+    <Box className='content-right' sx={{ backgroundColor: 'customColors.bodyBg', display: "flex" }}>
+      {!hidden ? (
         <LeftWrapper>
           <Box sx={{ top: 26, left: 26, display: 'flex', position: 'absolute', alignItems: 'center' }}>
             <svg width={34} height={23.375} viewBox='0 0 32 22' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -101,7 +108,7 @@ const RegisterMultiSteps = () => {
             image={`/images/pages/auth-v2-register-multi-steps-mask-${theme.palette.mode}.png`}
           />
         </LeftWrapper>
-      ) : null} */}
+      ) : null}
       <RightWrapper>
         <Box sx={{ maxWidth: 700 }}>
             <StepAccountDetails />
