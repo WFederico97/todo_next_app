@@ -132,7 +132,7 @@ const LoginPage = () => {
 
   return (
     <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>
-      {!hidden ? (
+      {/* {!hidden ? (
         <Box
           sx={{
             flex: 1,
@@ -148,7 +148,7 @@ const LoginPage = () => {
           <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} />
           <FooterIllustrationsV2 />
         </Box>
-      ) : null}
+      ) : null} */}
       <RightWrapper>
         <Box
           sx={{
