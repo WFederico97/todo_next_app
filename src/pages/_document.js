@@ -10,6 +10,7 @@ import createEmotionServer from '@emotion/server/create-instance'
 // ** Utils Imports
 import { createEmotionCache } from 'src/@core/utils/create-emotion-cache'
 
+
 import ButtonAppBar from '@/components/AppBar/AppBar'
 
 class CustomDocument extends Document {

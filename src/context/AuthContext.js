@@ -6,6 +6,7 @@ const defaultProviderValue = {
     login: () => { },
     loading: false,
     error: false,
+    show: false,
     token: null,
     tokenExpirationDate: null,
     isAuth: false,
@@ -23,15 +24,14 @@ const AuthProvider = ({ children }) => {
     const [error, setError] = useState(defaultProviderValue.error)
     const [token, setToken] = useState(defaultProviderValue.token)
     const [tokenExpirationDate, setTokenExpirationDate] = useState(defaultProviderValue.tokenExpirationDate)
+    const [show, setShow] = useState(defaultProviderValue.show)
 
-
-    const router = useRouter()
 
     const register = async (data) => {
         try {
             setLoading(true)
             await postRegister(data)
-            router.replace("/login")
+            
 
         } catch(err) {
             setLoading(false)
@@ -50,12 +50,14 @@ const AuthProvider = ({ children }) => {
             const expirationDate = new Date(new Date.getTime() + (1000 * 60 * 15))
             setTokenExpirationDate(expirationDate)
             localStorage.setItem('expirationDate', JSON.stringify(expirationDate.toISOString()))
+            setShow(true)
         }
         catch (err) {
             setLoading(false)
-            setError(err.response.data.detail || "Internal server error")
+            setError(err.response?.data?.detail || "Internal server error")
         } finally {
             setLoading(false)
+            
         }
     }
 
@@ -64,6 +66,7 @@ const AuthProvider = ({ children }) => {
         setTokenExpirationDate(null)
         localStorage.removeItem('accessToken')
         localStorage.removeItem('expirationDate')
+        setShow(false)
     }
 
     const values = {
@@ -73,7 +76,7 @@ const AuthProvider = ({ children }) => {
         token,
         tokenExpirationDate,
         register,
-        logout: () => { }
+        logOut,
     }
     return (
         <AuthContext.Provider value={ values} >

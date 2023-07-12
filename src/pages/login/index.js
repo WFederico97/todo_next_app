@@ -35,6 +35,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import useBgColor from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
+
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
 
@@ -51,10 +52,10 @@ const LoginIllustration = styled('img')(({ theme }) => ({
   marginTop: theme.spacing(12),
   marginBottom: theme.spacing(12),
   [theme.breakpoints.down(1540)]: {
-    maxHeight: 550
+    maxHeight: 500
   },
   [theme.breakpoints.down('lg')]: {
-    maxHeight: 500
+    maxHeight: 400
   }
 }))
 
@@ -85,13 +86,13 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
+  username: yup.string().min(5).required(),
   password: yup.string().min(5).required()
 })
 
 const defaultValues = {
   password: 'admin',
-  email: 'admin@vuexy.com'
+  username: 'username'
 }
 
 const LoginPage = () => {
@@ -119,20 +120,26 @@ const LoginPage = () => {
     resolver: yupResolver(schema)
   })
 
+  const {login, show} = useAuth()
+
   const onSubmit = data => {
-    const { email, password } = data
-    auth.login({ email, password, rememberMe }, () => {
-      setError('email', {
+    const { username, password } = data
+    auth.login({ username, password, rememberMe }, () => {
+      setError('username', {
         type: 'manual',
-        message: 'Email or Password is invalid'
+        message: 'username or Password is invalid'
       })
     })
+
+    login(data)
+    
+
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 
   return (
-    <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>
-      {/* {!hidden ? (
+    <Box className='content-right' sx={{ backgroundColor: 'background.paper', display: "flex", justifyContent: "center" }}>
+      {!hidden ? (
         <Box
           sx={{
             flex: 1,
@@ -148,7 +155,7 @@ const LoginPage = () => {
           <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} />
           <FooterIllustrationsV2 />
         </Box>
-      ) : null} */}
+      ) : null}
       <RightWrapper>
         <Box
           sx={{
@@ -190,39 +197,31 @@ const LoginPage = () => {
             </svg>
             <Box sx={{ my: 6 }}>
               <Typography sx={{ mb: 1.5, fontWeight: 500, fontSize: '1.625rem', lineHeight: 1.385 }}>
-                {`Welcome to ${themeConfig.templateName}! 👋🏻`}
+                {`Welcome to TurboLab! 👋🏻`}
               </Typography>
               <Typography sx={{ color: 'text.secondary' }}>
                 Please sign-in to your account and start the adventure
               </Typography>
             </Box>
-            <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
-              <Typography variant='body2' sx={{ mb: 2, color: 'primary.main' }}>
-                Admin: <strong>admin@vuexy.com</strong> / Pass: <strong>admin</strong>
-              </Typography>
-              <Typography variant='body2' sx={{ color: 'primary.main' }}>
-                Client: <strong>client@vuexy.com</strong> / Pass: <strong>client</strong>
-              </Typography>
-            </Alert>
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <FormControl fullWidth sx={{ mb: 4 }}>
                 <Controller
-                  name='email'
+                  name='username'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange, onBlur } }) => (
                     <TextField
                       autoFocus
-                      label='Email'
+                      label='Username'
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
-                      error={Boolean(errors.email)}
-                      placeholder='admin@vuexy.com'
+                      error={Boolean(errors.username)}
+                      placeholder='Username'
                     />
                   )}
                 />
-                {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
+                {errors.username && <FormHelperText sx={{ color: 'error.main' }}>{errors.username.message}</FormHelperText>}
               </FormControl>
               <FormControl fullWidth sx={{ mb: 1.5 }}>
                 <InputLabel htmlFor='auth-login-v2-password' error={Boolean(errors.password)}>

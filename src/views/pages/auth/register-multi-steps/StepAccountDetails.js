@@ -77,6 +77,7 @@ const StepAccountDetails = ({ handleNext }) => {
   })
   const [isLoading, setIsLoading] = useState(false)
   
+  
 
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword })
@@ -97,7 +98,7 @@ const StepAccountDetails = ({ handleNext }) => {
     resolver: yupResolver(schema)
   })
 
-  const { register, error, loading } = useAuth()
+  const { register, error, loading, show } = useAuth()
   const router = useRouter()
 
   const onSubmit = (data) => {
@@ -107,6 +108,7 @@ const StepAccountDetails = ({ handleNext }) => {
     }, 3000)
 
     register(data)
+    reset();
 
   }
 
