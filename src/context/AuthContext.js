@@ -1,6 +1,6 @@
 const { createContext, useState } = require("react")
 import { postRegister, postLogin } from "@/services/auth"
-
+import { useRouter } from "next/router"
 
 const defaultProviderValue = {
     login: () => { },
@@ -16,7 +16,7 @@ const defaultProviderValue = {
 
 
 
-const AuthContext = createContext(defaultProviderValue)
+export const  AuthContext = createContext(defaultProviderValue)
 
 const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(defaultProviderValue.loading)
@@ -24,15 +24,18 @@ const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(defaultProviderValue.token)
     const [tokenExpirationDate, setTokenExpirationDate] = useState(defaultProviderValue.tokenExpirationDate)
 
-    const register = async () => {
+
+    const router = useRouter()
+
+    const register = async (data) => {
         try {
             setLoading(true)
             await postRegister(data)
+            router.replace("/login")
 
-
-        } catch {
+        } catch(err) {
             setLoading(false)
-            setError(error.response.data.detail || "Internal server error")
+            setError(err.response?.data?.detail || "Internal server error")
         } finally {
             setLoading(false)
         }
@@ -48,9 +51,9 @@ const AuthProvider = ({ children }) => {
             setTokenExpirationDate(expirationDate)
             localStorage.setItem('expirationDate', JSON.stringify(expirationDate.toISOString()))
         }
-        catch {
+        catch (err) {
             setLoading(false)
-            setError(error.response.data.detail || "Internal server error")
+            setError(err.response.data.detail || "Internal server error")
         } finally {
             setLoading(false)
         }
