@@ -34,5 +34,5 @@ const Home = () => {
     </Grid>
   )
 }
-
-export default Home
+Home.protected = true
+export default Home 
