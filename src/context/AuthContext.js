@@ -1,4 +1,4 @@
-const { createContext, useState } = require("react")
+const { createContext, useState, useEffect } = require("react")
 import { postRegister, postLogin } from "@/services/auth"
 import { useRouter } from "next/router"
 
@@ -15,9 +15,7 @@ const defaultProviderValue = {
 
 }
 
-
-
-export const  AuthContext = createContext(defaultProviderValue)
+export const AuthContext = createContext(defaultProviderValue)
 
 const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(defaultProviderValue.loading)
@@ -25,21 +23,51 @@ const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(defaultProviderValue.token)
     const [tokenExpirationDate, setTokenExpirationDate] = useState(defaultProviderValue.tokenExpirationDate)
     const [show, setShow] = useState(defaultProviderValue.show)
+    let logoutTimer
+    const router = useRouter();
+
+    useEffect(() => {
+        const initAuth = () => {
+            const expirationDate = localStorage.getItem("expirationDate");
+            const accessToken = localStorage.getItem("accessToken");
+            if (accessToken && expirationDate) {
+                setToken(JSON.parse(accessToken));
+                setTokenExpirationDate(new Date(JSON.parse(expirationDate)));
+                setShow(true);
+            }
+        };
+        initAuth();
+    }, []);
+
+    useEffect(() => {
+        const autoLogout = () => {
+            if (tokenExpirationDate) {
+                const remainingTime =
+                    tokenExpirationDate.getTime() - new Date().getTime();
+                console.log(remainingTime);
+                logoutTimer = setTimeout(() => {
+                    console.log("logout");
+                    logOut();
+                }, remainingTime);
+            } else {
+                clearTimeout(logoutTimer);
+            }
+        };
+        autoLogout();
+    }, [tokenExpirationDate]);
 
 
     const register = async (data) => {
         try {
-            setLoading(true)
-            await postRegister(data)
-            
-
-        } catch(err) {
-            setLoading(false)
-            setError(err.response?.data?.detail || "Internal server error")
+          setLoading(true);
+          await postRegister(data);
+          setError(null);
+        } catch (err) {
+          setError(err.response?.data?.detail || "Internal server error");
         } finally {
-            setLoading(false)
+          setLoading(false);
         }
-    }
+      };
 
     const login = async (loginParams) => {
         try {
@@ -47,17 +75,18 @@ const AuthProvider = ({ children }) => {
             const response = await postLogin(loginParams)
             setToken(response.data.access_token)
             localStorage.setItem('accessToken', JSON.stringify(response.data.access_token))
-            const expirationDate = new Date(new Date.getTime() + (1000 * 60 * 15))
+            const expirationDate = new Date(new Date().getTime() + (1000 * 60 * 120))
             setTokenExpirationDate(expirationDate)
             localStorage.setItem('expirationDate', JSON.stringify(expirationDate.toISOString()))
             setShow(true)
+            router.replace("/home")
         }
         catch (err) {
             setLoading(false)
             setError(err.response?.data?.detail || "Internal server error")
         } finally {
             setLoading(false)
-            
+
         }
     }
 
@@ -67,10 +96,11 @@ const AuthProvider = ({ children }) => {
         localStorage.removeItem('accessToken')
         localStorage.removeItem('expirationDate')
         setShow(false)
+        router.replace('/login')
     }
 
     const values = {
-        login ,
+        login,
         loading,
         error,
         token,
@@ -79,7 +109,7 @@ const AuthProvider = ({ children }) => {
         logOut,
     }
     return (
-        <AuthContext.Provider value={ values} >
+        <AuthContext.Provider value={values} >
             {children}
         </AuthContext.Provider>
     )
