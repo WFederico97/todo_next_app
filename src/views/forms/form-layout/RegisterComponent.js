@@ -1,6 +1,9 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, Controller } from "react-hook-form";
+
+// ** Redux Imports
+import { useDispatch, useSelector } from 'react-redux';
 
 // ** Next Import
 import Link from 'next/link'
@@ -25,6 +28,9 @@ import MenuItem from '@mui/material/MenuItem'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
+// ** Store Imports
+import { getCompanies } from '@/store/companies/companiesSlice';
+
 // ** Hooks
 import { useAuth } from "@/hooks/useAuth";
 
@@ -41,9 +47,9 @@ const formSchema = yup.object({
     .trim()
     .min(5, "La contraseña debe ser minimo 5 caracteres")
     .required("Campo Obligatorio"),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir'),
+  // confirmPassword: yup
+  //   .string()
+  //   .oneOf([yup.ref('password'), null], 'Las contraseñas deben coincidir'),
   email: yup
     .string()
     .email()
@@ -51,18 +57,15 @@ const formSchema = yup.object({
   company: yup
     .string()
     .trim()
-    .min(3, "Ingresar al menos 3 caracteres")
-    .required(),
-  languages: yup
+    .required("Debes seleccionar una companía"),
+  language: yup
     .string()
     .trim()
-    .min(3, "Ingresar al menos 3 caracteres")
-    .required(),
+    .required("Debes seleccionar un lenguaje"),
   country: yup
     .string()
     .trim()
-    .min(3, "Ingresar al menos 3 caracteres")
-    .required(),
+    .required("Debes seleccionar un país"),
 });
 
 // ** Yup
@@ -72,13 +75,13 @@ import ErrorChip from '@/components/chips/ErrorChip';
 
 // ** Default Form Values
 const defaultValues = {
-  username: "",
-  password: "",
-  confirmPassword: "",
   email: "",
-  first_name: "",
-  last_name: "",
+  password: "",
+  username: "",
   role: "",
+  country: "",
+  language: "",
+  company: "",
 };
 const RegisterComponent = () => {
   // ** States
@@ -87,20 +90,21 @@ const RegisterComponent = () => {
     showPassword: false
   })
 
-  const [confirmPassValues, setConfirmPassValues] = useState({
-    password: '',
-    showPassword: false
-  })
+  // const [confirmPassValues, setConfirmPassValues] = useState({
+  //   password: '',
+  //   showPassword: false
+  // })
 
   // ** Hooks
   const auth = useAuth();
+  const companies = useSelector((state) => state.companies.data)
+  const dispatch = useDispatch()
 
   // ** Form Validations
   const {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm({
     defaultValues,
     mode: "all",
@@ -124,9 +128,13 @@ const RegisterComponent = () => {
     setValues({ ...values, showPassword: !values.showPassword })
   }
 
-  const handleClickConfirmPassShow = () => {
-    setConfirmPassValues({ ...confirmPassValues, showPassword: !confirmPassValues.showPassword })
-  }
+  // const handleClickConfirmPassShow = () => {
+  //   setConfirmPassValues({ ...confirmPassValues, showPassword: !confirmPassValues.showPassword })
+  // }
+
+  useEffect(()=>{
+    dispatch(getCompanies({page: 1 , limit: 10}))
+  }, [])
 
   return (
     <Card>
@@ -231,7 +239,7 @@ const RegisterComponent = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth>
+              {/* <FormControl fullWidth>
                 <InputLabel htmlFor='confirm-password'>Confirmar Contraseña</InputLabel>
                 <Controller
                   name='confirmPassword'
@@ -264,6 +272,61 @@ const RegisterComponent = () => {
                   <Grid sx={{ padding: '0.256em' }} >
                     <Typography variant="subtitle1">
                       <ErrorChip /> {errors.confirmPassword.message}
+                    </Typography>
+                  </Grid>
+                )}
+              </FormControl> */}
+              <FormControl required fullWidth>
+                <InputLabel id='companySelector'>Company</InputLabel>
+                <Controller
+                  name='company'
+                  control={control}
+                  render={({ field }) => (
+                    <Select label='Company' labelId='companySelector' fullWidth {...field} />
+                  )}
+                />
+                {errors.company && (
+                  <Grid  >
+                    <Typography variant="subtitle1">
+                      <ErrorChip /> {errors.company.message}
+                    </Typography>
+                  </Grid>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl required fullWidth>
+                <InputLabel id='languageSelector'>Language</InputLabel>
+                <Controller
+                  name='language'
+                  control={control}
+                  render={({ field }) => (
+                    <Select label='Language' labelId='languageSelector' fullWidth {...field} />
+                  )}
+                />
+                {errors.language && (
+                  <Grid  >
+                    <Typography variant="subtitle1">
+                      <ErrorChip /> {errors.language.message}
+                    </Typography>
+                  </Grid>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl required fullWidth>
+                <InputLabel id='countrySelector'>Country</InputLabel>
+                <Controller
+                  name='country'
+                  control={control}
+                  render={({ field }) => (
+                    <Select label='Country' labelId='countrySelector' fullWidth {...field} />
+                  )}
+                />
+                {errors.country && (
+                  <Grid  >
+                    <Typography variant="subtitle1">
+                      <ErrorChip /> {errors.country.message}
                     </Typography>
                   </Grid>
                 )}
