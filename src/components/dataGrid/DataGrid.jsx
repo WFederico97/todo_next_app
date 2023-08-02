@@ -58,7 +58,6 @@ import { deleteTodo, getTodos } from '@/store/todos/todoslice';
 import Button from '@mui/material/Button';
 
 
-
 export default function DataGridDemo() {
     const rows = useSelector((state) => state.todos.data);
 
