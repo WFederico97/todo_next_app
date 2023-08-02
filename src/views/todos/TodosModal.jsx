@@ -59,16 +59,16 @@ export default function TodosModal({ open, handleClose }) {
         reset()
         handleClose()
     }
-    
 
     return (
         <div>
             <Dialog open={open} onClose={handleClose}>
                 <form onSubmit={handleSubmit(handleOnSubmit)}>
-                    <DialogTitle>Add a new todo</DialogTitle>
+                    <DialogTitle>Subscribe</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Please fill the form below to add a new todo to your todo list.
+                            To subscribe to this website, please enter your email address here. We
+                            will send updates occasionally.
                         </DialogContentText>
                         <Controller
                             name="title"
@@ -113,7 +113,7 @@ export default function TodosModal({ open, handleClose }) {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
-                        <Button type='submit'>Add</Button>
+                        <Button type='submit'>Subscribe</Button>
                     </DialogActions>
                 </form>
             </Dialog>

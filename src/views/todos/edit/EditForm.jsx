@@ -11,7 +11,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { Checkbox, MenuItem, Select } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { addTodo, updateTodo } from '@/store/todos/todoslice';
+import { updateTodo } from '@/store/todos/todoslice';
+
 
 
 const formSchema = yup.object({
@@ -35,7 +36,7 @@ const formSchema = yup.object({
         .required("Campo Obligatorio"),
 });
 
-const EditForm = () => {
+export default function EditForm({todo}) {
     const dispatch = useDispatch()
     const {
         control,
@@ -44,7 +45,7 @@ const EditForm = () => {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            title:todo.title,
+            title: todo.title,
             description: todo.description,
             priority: todo.priority,
             complete: todo.complete
@@ -55,13 +56,11 @@ const EditForm = () => {
 
     const handleOnSubmit = (data) => {
         dispatch(updateTodo(data))
-        reset()
-        handleClose()
     }
 
     return (
         <div>
-            <Dialog open={true} onClose={handleClose}>
+            <Dialog open={ true }>
                 <form onSubmit={handleSubmit(handleOnSubmit)}>
                     <DialogTitle>Subscribe</DialogTitle>
                     <DialogContent>
@@ -111,7 +110,6 @@ const EditForm = () => {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
                         <Button type='submit'>Subscribe</Button>
                     </DialogActions>
                 </form>
@@ -119,5 +117,3 @@ const EditForm = () => {
         </div>
     );
 }
-
-export default EditForm
