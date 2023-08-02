@@ -29,12 +29,11 @@ export const deleteTodo = createAsyncThunk('todos/deleteTodo', async (id, { disp
     return id
 })
 
-export const updateTodo = createAsyncThunk('todos/updateTodo', async (data, { dispatch, getState }) => {
-    const { id } = data; 
-    await fetchUpdateTodo(id, data);
-    await dispatch(getTodos(getState().todos.params));
-    return data;
-  });
+export const updateTodo = createAsyncThunk('todos/updateTodo', async (id, data, { dispatch, getState }) => {
+    await fetchUpdateTodo(id, data)
+    await dispatch(getTodos(getState().todos.params))
+    return data
+})
 
 const todosSlice = createSlice({
     name: 'todos',

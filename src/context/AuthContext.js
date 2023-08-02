@@ -59,15 +59,16 @@ const AuthProvider = ({ children }) => {
 
     const register = async (data) => {
         try {
-          setLoading(true);
-          await postRegister(data);
-          setError(null);
+            setLoading(true)
+            await postRegister(data)
+            router.replace("/login")
         } catch (err) {
-          setError(err.response?.data?.detail || "Internal server error");
+            setLoading(false)
+            setError(err.response?.data?.detail || "Internal server error")
         } finally {
-          setLoading(false);
+            setLoading(false)
         }
-      };
+    }
 
     const login = async (loginParams) => {
         try {
