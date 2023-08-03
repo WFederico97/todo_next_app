@@ -30,6 +30,8 @@ import Icon from 'src/@core/components/icon'
 
 // ** Store Imports
 import { getCompanies } from '@/store/companies/companiesSlice';
+import { getCountries } from '@/store/countries/countriesSlice';
+import { getLanguages } from '@/store/languages/languagesSlice';
 
 // ** Hooks
 import { useAuth } from "@/hooks/useAuth";
@@ -73,15 +75,16 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorChip from '@/components/chips/ErrorChip';
 
+
 // ** Default Form Values
 const defaultValues = {
-  email: "",
-  password: "",
-  username: "",
-  role: "",
-  country: "",
-  language: "",
-  company: "",
+  usr_email: "",
+  usr_password: "",
+  usr_name: "",
+  usr_role: "",
+  usr_country: "",
+  usr_language: "",
+  usr_company: "",
 };
 const RegisterComponent = () => {
   // ** States
@@ -97,8 +100,16 @@ const RegisterComponent = () => {
 
   // ** Hooks
   const auth = useAuth();
-  const companies = useSelector((state) => state.companies.data || [])
+  const companies = useSelector((state) => state.companies.data)
+  const countries = useSelector((state) => state.countries.data)
+  const languages = useSelector((state) => state.languages.data)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getCompanies())
+    dispatch(getCountries())
+    dispatch(getLanguages())
+  }, [])
 
   // ** Form Validations
   const {
@@ -113,6 +124,9 @@ const RegisterComponent = () => {
 
   // ** Form Functions
   const handleOnSubmit = async (data) => {
+    
+    console.log("llegue")
+    
     auth.register(data);
   };
 
@@ -120,22 +134,11 @@ const RegisterComponent = () => {
     setValues({ ...values, [prop]: event.target.value })
   }
 
-  const handleConfirmPassChange = prop => event => {
-    setConfirmPassValues({ ...confirmPassValues, [prop]: event.target.value })
-  }
-
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword })
   }
 
-  // const handleClickConfirmPassShow = () => {
-  //   setConfirmPassValues({ ...confirmPassValues, showPassword: !confirmPassValues.showPassword })
-  // }
 
-  useEffect(()=>{
-    dispatch(getCompanies({page: 1 , limit: 10}))
-    console.log(companies)
-  }, [dispatch])
 
   return (
     <Card>
@@ -156,47 +159,47 @@ const RegisterComponent = () => {
           <Grid container spacing={5}>
             <Grid item xs={12} >
               <Controller
-                name='username'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    fullWidth
-                    label='Nombre'
-                    sx={{ mb: 4 }}
-                    placeholder='Juan Roman'
-                    {...field} />
-                )}
+              name='usr_name'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  fullWidth
+                  label='Nombre'
+                  placeholder='Juan Roman'
+                  {...field} />
+              )}
               />
-              {errors.username && (
+              {errors.usr_name && (
                 <Grid>
                   <Typography
                     variant="subtitle1"
+                    sx={{ pt: '0.256em' }}
                   >
-                    <ErrorChip /> {errors.username.message}
+                    <ErrorChip /> {errors.usr_name.message}
                   </Typography>
                 </Grid>
               )}
             </Grid>
             <Grid item xs={12}>
               <Controller
-                name="email"
+                name="usr_email"
                 control={control}
                 render={({ field }) => (
                   <TextField
                     fullWidth
                     label="Email"
-                    sx={{ mb: 4 }}
                     placeholder="user@email.com"
                     {...field}
                   />
                 )}
               />
-              {errors.email && (
+              {errors.usr_email && (
                 <Grid>
                   <Typography
                     variant="subtitle1"
+                    sx={{ pt: '0.256em' }}
                   >
-                    <ErrorChip /> {errors.email.message}
+                    <ErrorChip /> {errors.usr_email.message}
                   </Typography>
                 </Grid>
               )}
@@ -205,12 +208,12 @@ const RegisterComponent = () => {
               <FormControl fullWidth >
                 <InputLabel htmlFor='loginForm'>Contraseña</InputLabel>
                 <Controller
-                  name='password'
+                  name='usr_password'
                   control={control}
                   render={({ field }) => (
                     <OutlinedInput
                       label='Contraseña'
-                      value={values.password}
+                      value={values.usr_password}
                       onChange={handleChange('password')}
                       id='loginForm'
                       type={values.showPassword ? 'text' : 'password'}
@@ -230,10 +233,10 @@ const RegisterComponent = () => {
                     />
                   )}
                 />
-                {errors.password && (
-                  <Grid sx={{ padding: '0.256em' }} >
-                    <Typography variant="subtitle1">
-                      <ErrorChip /> {errors.password.message}
+                {errors.usr_password && (
+                  <Grid >
+                    <Typography sx={{ pt: '0.256em' }} variant="subtitle1">
+                      <ErrorChip /> {errors.usr_password.message}
                     </Typography>
                   </Grid>
                 )}
@@ -243,22 +246,22 @@ const RegisterComponent = () => {
               <FormControl required fullWidth>
                 <InputLabel id='companySelector'>Company</InputLabel>
                 <Controller
-                  name='company'
+                  name='usr_company'
                   control={control}
                   render={({ field }) => (
-                    <Select label='Company' labelId='companySelector' fullWidth {...field} > 
-                        {companies.map((company, index)=>(
-                          <MenuItem key={index} value={company}>
-                            {company}
-                          </MenuItem>
-                        ))}
+                    <Select label='Company' labelId='companySelector' fullWidth {...field} >
+                      {companies.map((company, index) => (
+                        <MenuItem key={index} value={company.name}>
+                          {company.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   )}
                 />
-                {errors.company && (
+                {errors.usr_company && (
                   <Grid  >
-                    <Typography variant="subtitle1">
-                      <ErrorChip /> {errors.company.message}
+                    <Typography sx={{ pt: '0.256em' }} variant="subtitle1">
+                      <ErrorChip /> {errors.usr_company.message}
                     </Typography>
                   </Grid>
                 )}
@@ -268,16 +271,22 @@ const RegisterComponent = () => {
               <FormControl required fullWidth>
                 <InputLabel id='languageSelector'>Language</InputLabel>
                 <Controller
-                  name='language'
+                  name='usr_language'
                   control={control}
                   render={({ field }) => (
-                    <Select label='Language' labelId='languageSelector' fullWidth {...field} />
+                    <Select label='Languages' labelId='languageSelector' fullWidth {...field} >
+                      {languages.map((language, index) => (
+                        <MenuItem key={index} value={language.name}>
+                          {language.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   )}
                 />
-                {errors.language && (
+                {errors.usr_language && (
                   <Grid  >
-                    <Typography variant="subtitle1">
-                      <ErrorChip /> {errors.language.message}
+                    <Typography sx={{ pt: '0.256em' }} variant="subtitle1">
+                      <ErrorChip /> {errors.usr_language.message}
                     </Typography>
                   </Grid>
                 )}
@@ -287,16 +296,22 @@ const RegisterComponent = () => {
               <FormControl required fullWidth>
                 <InputLabel id='countrySelector'>Country</InputLabel>
                 <Controller
-                  name='country'
+                  name='usr_country'
                   control={control}
                   render={({ field }) => (
-                    <Select label='Country' labelId='countrySelector' fullWidth {...field} />
+                    <Select label='Country' labelId='countrySelector' fullWidth {...field} >
+                      {countries.map((country, index) => (
+                        <MenuItem key={index} value={country.name}>
+                          {country.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   )}
                 />
-                {errors.country && (
+                {errors.usr_country && (
                   <Grid  >
-                    <Typography variant="subtitle1">
-                      <ErrorChip /> {errors.country.message}
+                    <Typography sx={{ pt: '0.256em' }} variant="subtitle1">
+                      <ErrorChip /> {errors.usr_country.message}
                     </Typography>
                   </Grid>
                 )}
@@ -323,7 +338,7 @@ const RegisterComponent = () => {
                   }}
                 >
                   <Typography sx={{ mr: 2 }}>Already have an account?</Typography>
-                  <Link href='/login' onClick={e => e.preventDefault()}>
+                  <Link href='/login'>
                     Log in
                   </Link>
                 </Box>

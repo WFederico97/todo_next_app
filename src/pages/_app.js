@@ -1,8 +1,10 @@
+import ButtonAppBar from '@/components/AppBar/AppBar'
 import AuthGuard from '@/components/Guards/AuthGuard'
 import GuestGuard from '@/components/Guards/GuestGuard'
 import AuthProvider from '@/context/AuthContext'
 import { store } from '@/store'
 import '@/styles/globals.css'
+
 import { Provider } from 'react-redux'
 
 const Guard = ({ children, authGuard, guestGuard }) => {
@@ -24,6 +26,7 @@ export default function App({ Component, pageProps }) {
     <Provider store={store}>
     <AuthProvider>
       <Guard authGuard={authGuard} guestGuard={guestGuard}>
+        <ButtonAppBar />
         <Component {...pageProps} />
       </Guard>
     </AuthProvider>

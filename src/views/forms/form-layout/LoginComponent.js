@@ -44,19 +44,19 @@ import ErrorChip from '@/components/chips/ErrorChip'
 
 // ** YUP default Values
 const defaultValues = {
-  email: "",
-  password: "",
+  usr_email: "",
+  usr_password: "",
 };
 
 // ** YUP schemas
 const formSchema = yup.object({
-  email: yup
+  usr_email: yup
     .string()
     .trim()
     .email()
     .required("Campo Obligatorio"),
 
-  password: yup
+  usr_password: yup
     .string()
     .trim()
     .min(6, "La contraseña debe ser minimo 6 caracteres")
@@ -90,7 +90,6 @@ const LoginComponent = () => {
     auth.login(data);
     
   };
-  console.log(errors)
   // Handle Password
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
@@ -115,16 +114,16 @@ const LoginComponent = () => {
             </Grid>
             <Grid item xs={12}>
               <Controller
-                name="email"
+                name="usr_email"
                 control={control}
                 render={({ field }) => (
                   <TextField fullWidth label='Email' placeholder='Juan Roman' {...field} />
                 )}
               />
-              {errors.email && (
+              {errors.usr_email && (
                 <Grid sx={{ padding: '0.256em' }} >
                   <Typography variant="subtitle1">
-                    <ErrorChip /> {errors.email.message}
+                    <ErrorChip /> {errors.usr_email.message}
                   </Typography>
                 </Grid>
               )}
@@ -133,7 +132,7 @@ const LoginComponent = () => {
               <FormControl fullWidth >
                 <InputLabel htmlFor='loginForm'>Contraseña</InputLabel>
                 <Controller
-                  name='password'
+                  name='usr_password'
                   control={control}
                   render={({ field }) => ( 
                     <OutlinedInput
@@ -158,10 +157,10 @@ const LoginComponent = () => {
                     />
                   )}
                 />
-                {errors.password && (
+                {errors.usr_password && (
                   <Grid sx={{ padding: '0.256em' }} >
                     <Typography variant="subtitle1">
-                      <ErrorChip /> {errors.password.message}
+                      <ErrorChip /> {errors.usr_password.message}
                     </Typography>
                   </Grid>
                 )}
