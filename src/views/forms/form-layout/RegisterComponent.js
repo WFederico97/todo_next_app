@@ -134,6 +134,7 @@ const RegisterComponent = () => {
 
   useEffect(()=>{
     dispatch(getCompanies({page: 1 , limit: 10}))
+    
   }, [])
 
   return (
@@ -239,50 +240,19 @@ const RegisterComponent = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              {/* <FormControl fullWidth>
-                <InputLabel htmlFor='confirm-password'>Confirmar Contraseña</InputLabel>
-                <Controller
-                  name='confirmPassword'
-                  control={control}
-                  render={({ field }) => (
-                    <OutlinedInput
-                      label='Confirmar Contraseña'
-                      value={confirmPassValues.password}
-                      id='confirm-password'
-                      onChange={handleConfirmPassChange('password')}
-                      type={confirmPassValues.showPassword ? 'text' : 'password'}
-                      endAdornment={
-                        <InputAdornment position='end'>
-                          <IconButton
-                            edge='end'
-                            onClick={handleClickConfirmPassShow}
-                            onMouseDown={e => e.preventDefault()}
-                            aria-label='toggle password visibility'
-                          >
-                            <Icon icon={confirmPassValues.showPassword ? 'tabler:eye' : 'tabler:eye-off'} />
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                      {...field}
-                    />
-
-                  )}
-                />
-                {errors.confirmPassword && (
-                  <Grid sx={{ padding: '0.256em' }} >
-                    <Typography variant="subtitle1">
-                      <ErrorChip /> {errors.confirmPassword.message}
-                    </Typography>
-                  </Grid>
-                )}
-              </FormControl> */}
               <FormControl required fullWidth>
                 <InputLabel id='companySelector'>Company</InputLabel>
                 <Controller
                   name='company'
                   control={control}
                   render={({ field }) => (
-                    <Select label='Company' labelId='companySelector' fullWidth {...field} />
+                    <Select label='Company' labelId='companySelector' fullWidth {...field} > 
+                        {companies.map((company, index)=>(
+                          <MenuItem key={index} >
+                            {company}
+                          </MenuItem>
+                        ))}
+                    </Select>
                   )}
                 />
                 {errors.company && (

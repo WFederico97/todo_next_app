@@ -13,12 +13,12 @@
  })
 
  const companiesSlice = createSlice({
-    name: 'Companies',
+    name: 'companies',
     initialState,
     reducers: {},
     extraReducers: builder => {
         builder.addCase(getCompanies.fulfilled, (state, action) => {
-            state.data = action.payload.Companies
+            state.data = action.payload.companies
             state.params = action.payload.params
         })
     }
