@@ -6,7 +6,7 @@
     params: {}
  }
 
- export const getCompanies = createAsyncThunk('company/getCompanies', async (params) => {
+ export const getCompanies = createAsyncThunk('/company', async (params) => {
     const response = await fetchCompanies(params)
 
     return response

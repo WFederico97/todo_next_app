@@ -97,7 +97,7 @@ const RegisterComponent = () => {
 
   // ** Hooks
   const auth = useAuth();
-  const companies = useSelector((state) => state.companies.data)
+  const companies = useSelector((state) => state.companies.data || [])
   const dispatch = useDispatch()
 
   // ** Form Validations
@@ -134,8 +134,8 @@ const RegisterComponent = () => {
 
   useEffect(()=>{
     dispatch(getCompanies({page: 1 , limit: 10}))
-    
-  }, [])
+    console.log(companies)
+  }, [dispatch])
 
   return (
     <Card>
@@ -248,7 +248,7 @@ const RegisterComponent = () => {
                   render={({ field }) => (
                     <Select label='Company' labelId='companySelector' fullWidth {...field} > 
                         {companies.map((company, index)=>(
-                          <MenuItem key={index} >
+                          <MenuItem key={index} value={company}>
                             {company}
                           </MenuItem>
                         ))}
